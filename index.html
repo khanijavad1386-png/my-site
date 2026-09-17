@@ -1,0 +1,153 @@
+index.html
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بازار کشاورزی محلی</title>
+    <style>
+        body {
+            font-family: Tahoma, sans-serif;
+            background-color: #f0f8f0;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            color: #2e7d32;
+            font-size: 24px;
+        }
+        p {
+            color: #555;
+        }
+        .box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 350px;
+            margin: 20px auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: right;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 5px;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: Tahoma;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2e7d32;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .farmer-card {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-right: 4px solid #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌾 بازار کشاورزی محلی</h1>
+    <p>فرم ثبت‌نام کشاورزان</p>
+
+    <div class="box">
+        <label>نام و نام خانوادگی:</label>
+        <input type="text" id="name" placeholder="مثلاً: علی محمدی">
+
+        <label>شماره تماس:</label>
+        <input type="tel" id="phone" placeholder="مثلاً: 09123456789">
+
+        <label>نوع محصول:</label>
+        <select id="product">
+            <option>گندم</option>
+            <option>گوجه</option>
+            <option>خیار</option>
+            <option>سیب‌زمینی</option>
+            <option>برنج</option>
+            <option>پسته</option>
+            <option>زیتون</option>
+            <option>خرما</option>
+        </select>
+
+        <button onclick="submitForm()">ثبت‌نام</button>
+        <div id="message"></div>
+    </div>
+
+    <div class="box">
+        <h2 style="color: #2e7d32; font-size: 18px;">📋 لیست کشاورزان</h2>
+        <div id="farmerList">هنوز کسی ثبت‌نام نکرده است.</div>
+    </div>
+
+    <script>
+        function showFarmers() {
+            var farmers = JSON.parse(localStorage.getItem('farmers')) || [];
+            var listDiv = document.getElementById('farmerList');
+
+            if (farmers.length === 0) {
+                listDiv.innerHTML = 'هنوز کسی ثبت‌نام نکرده است.';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < farmers.length; i++) {
+                html += '<div class="farmer-card">' +
+                            '<b>' + farmers[i].name + '</b><br>' +
+                            '📞 ' + farmers[i].phone + '<br>' +
+                            '🌱 ' + farmers[i].product +
+                        '</div>';
+            }
+            listDiv.innerHTML = html;
+        }
+
+        function submitForm() {
+            var name = document.getElementById('name').value;
+            var phone = document.getElementById('phone').value;
+            var product = document.getElementById('product').value;
+
+            if (name === '' || phone === '') {
+                document.getElementById('message').innerHTML = '⚠️ لطفاً نام و شماره تماس را وارد کنید';
+                document.getElementById('message').style.color = 'red';
+                return;
+            }
+
+            var farmers = JSON.parse(localStorage.getItem('farmers')) || [];
+            farmers.push({ name: name, phone: phone, product: product });
+            localStorage.setItem('farmers', JSON.stringify(farmers));
+
+            document.getElementById('message').innerHTML = 
+                '✅ ' + name + ' عزیز، ثبت‌نام با موفقیت انجام شد!';
+            document.getElementById('message').style.color = 'green';
+
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+
+            showFarmers();
+        }
+
+        showFarmers();
+    </script>
+</body>
+</html>
